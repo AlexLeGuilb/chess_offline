@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="board.css">
+    <title>Offline Chess</title>
+</head>
+<body>
+    <div id="playground">
+        <div id="info">
+            <div id="beforeStart">Jeux d'échec multijoueur en local</div>
+            <div id="turn"></div>
+            <div id="check"></div>
+        </div>
+        <div id="chess">
+            <div id="board"></div>
+        </div>
+        <div id="gameBtn">
+            <button type="button" id="newGame" onclick="newGame()">Nouvelle partie</button>
+            <button type="button" id="surrender" onclick="newGame()">Abandonner</button>
+        </div>
+    </div>
+
+    <script src="board.js"></script>
+</body>
+</html>

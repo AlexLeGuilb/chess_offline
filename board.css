@@ -1,0 +1,275 @@
+/* Style général */
+* {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    background-color: #312f2f;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    --boardSize: min(80vh, 40vw);
+    --boardMinWidth: 300px;
+    --t8: 700%;
+    --t7: 600%;
+    --t6: 500%;
+    --t5: 400%;
+    --t4: 300%;
+    --t3: 200%;
+    --t2: 100%;
+    --t1: 0;
+    --hintColor: rgba(0, 0, 0, 0.14);
+    overflow: hidden;
+}
+
+#playground {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100vh;
+}
+
+#info {
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#info > #beforeStart {
+    font-size: max(17px, 2vw);
+}
+
+#info > #turn, #check {
+    font-size: max(15px, 1vw);
+}
+
+#board {
+    background-image: url("./img/board.png");
+    background-size: cover;
+
+    display: grid;
+
+    width: var(--boardSize);
+    height: var(--boardSize);
+    min-width: var(--boardMinWidth);
+    min-height: var(--boardMinWidth);
+}
+
+#gameBtn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#gameBtn > button {
+    margin: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    width: max(2vw, 150px);
+    height: 30px;
+    text-align: center;
+    color: white;
+}
+
+#newGame {
+    background-color:#16a34a;
+	border:1px solid #117736;
+}
+#newGame:hover {
+	background-color:#117736;
+}
+#newGame:active {
+    background-color:#16a34a;
+	position:relative;
+	top:1px;
+}
+
+#surrender {
+    background-color:#c74444;
+	border:1px solid #943333;
+}
+#surrender:hover {
+	background-color:#943333;
+}
+#surrender:active {
+    background-color:#c74444;
+	position:relative;
+	top:1px;
+}
+
+/*******************************************************/
+/*******************************************************/
+
+/* Style des cases */
+.piece {
+    background-size: 100%;
+    cursor: pointer;
+    cursor: grab;
+    cursor: -webkit-grab;
+    overflow: hidden;
+    touch-action: none;
+
+    width: calc(var(--boardSize) / 8);
+    height: calc(var(--boardSize) / 8);
+    min-width: calc(var(--boardMinWidth) / 8);
+    min-height: calc(var(--boardMinWidth) / 8);
+
+    z-index: 3;
+}
+
+.cell {
+    display: flex;
+    width: calc(var(--boardSize) / 8);
+    height: calc(var(--boardSize) / 8);
+    min-width: calc(var(--boardMinWidth) / 8);
+    min-height: calc(var(--boardMinWidth) / 8);
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/*******************************************************/
+/*******************************************************/
+
+/* Style pour les pièces et mouvement */
+.coordinate-light {
+    fill: #739552;
+}
+.coordinate-dark {
+    fill: #EBECD0;
+}
+.highlight-dark {
+    background-color: rgb(185, 202, 37);
+}
+
+.highlight-light {
+    background-color: rgb(245, 246, 130);
+}
+
+.capture-hint,.hint {
+    background-clip: content-box;
+    border-radius: 50%;
+    box-sizing: border-box;
+    pointer-events: none
+}
+
+.hint {
+    background-color: var(--hintColor);
+    padding: 4.2%
+}
+
+.capture-hint {
+    border: 10px solid var(--hintColor)
+}
+
+.is-checked {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+/*******************************************************/
+/*******************************************************/
+
+/* Images des pièces et positions */
+#board .piece.wk, #board .promotion-piece.wk {background-image: url('./img/wk.png');}
+#board .piece.wq, #board .promotion-piece.wq {background-image: url('./img/wq.png');}
+#board .piece.wr, #board .promotion-piece.wr {background-image: url('./img/wr.png');}
+#board .piece.wb, #board .promotion-piece.wb {background-image: url('./img/wb.png');}
+#board .piece.wn, #board .promotion-piece.wn {background-image: url('./img/wn.png');}
+#board .piece.wp, #board .promotion-piece.wp {background-image: url('./img/wp.png');}
+#board .piece.bk, #board .promotion-piece.bk {background-image: url('./img/bk.png');}
+#board .piece.bq, #board .promotion-piece.bq {background-image: url('./img/bq.png');}
+#board .piece.br, #board .promotion-piece.br {background-image: url('./img/br.png');}
+#board .piece.bb, #board .promotion-piece.bb {background-image: url('./img/bb.png');}
+#board .piece.bn, #board .promotion-piece.bn {background-image: url('./img/bn.png');}
+#board .piece.bp, #board .promotion-piece.bp {background-image: url('./img/bp.png');}
+
+.square-88 {transform: translate(var(--t8));}
+.square-78 {transform: translate(var(--t7));}
+.square-68 {transform: translate(var(--t6));}
+.square-58 {transform: translate(var(--t5));}
+.square-48 {transform: translate(var(--t4));}
+.square-38 {transform: translate(var(--t3));}
+.square-28 {transform: translate(var(--t2));}
+.square-18 {transform: translate(var(--t1));}
+
+.square-87 {transform: translate(var(--t8), var(--t2));}
+.square-77 {transform: translate(var(--t7), var(--t2));}
+.square-67 {transform: translate(var(--t6), var(--t2));}
+.square-57 {transform: translate(var(--t5), var(--t2));}
+.square-47 {transform: translate(var(--t4), var(--t2));}
+.square-37 {transform: translate(var(--t3), var(--t2));}
+.square-27 {transform: translate(var(--t2), var(--t2));}
+.square-17 {transform: translate(var(--t1), var(--t2));}
+
+.square-86 {transform: translate(var(--t8), var(--t2));}
+.square-76 {transform: translate(var(--t7), var(--t2));}
+.square-66 {transform: translate(var(--t6), var(--t2));}
+.square-56 {transform: translate(var(--t5), var(--t2));}
+.square-46 {transform: translate(var(--t4), var(--t2));}
+.square-36 {transform: translate(var(--t3), var(--t2));}
+.square-26 {transform: translate(var(--t2), var(--t2));}
+.square-16 {transform: translate(var(--t1), var(--t2));}
+
+.square-86 {transform: translate(var(--t8), var(--t3));}
+.square-76 {transform: translate(var(--t7), var(--t3));}
+.square-66 {transform: translate(var(--t6), var(--t3));}
+.square-56 {transform: translate(var(--t5), var(--t3));}
+.square-46 {transform: translate(var(--t4), var(--t3));}
+.square-36 {transform: translate(var(--t3), var(--t3));}
+.square-26 {transform: translate(var(--t2), var(--t3));}
+.square-16 {transform: translate(var(--t1), var(--t3));}
+
+.square-85 {transform: translate(var(--t8), var(--t4));}
+.square-75 {transform: translate(var(--t7), var(--t4));}
+.square-65 {transform: translate(var(--t6), var(--t4));}
+.square-55 {transform: translate(var(--t5), var(--t4));}
+.square-45 {transform: translate(var(--t4), var(--t4));}
+.square-35 {transform: translate(var(--t3), var(--t4));}
+.square-25 {transform: translate(var(--t2), var(--t4));}
+.square-15 {transform: translate(var(--t1), var(--t4));}
+
+.square-84 {transform: translate(var(--t8), var(--t5));}
+.square-74 {transform: translate(var(--t7), var(--t5));}
+.square-64 {transform: translate(var(--t6), var(--t5));}
+.square-54 {transform: translate(var(--t5), var(--t5));}
+.square-44 {transform: translate(var(--t4), var(--t5));}
+.square-34 {transform: translate(var(--t3), var(--t5));}
+.square-24 {transform: translate(var(--t2), var(--t5));}
+.square-14 {transform: translate(var(--t1), var(--t5));}
+
+.square-83 {transform: translate(var(--t8), var(--t6));}
+.square-73 {transform: translate(var(--t7), var(--t6));}
+.square-63 {transform: translate(var(--t6), var(--t6));}
+.square-53 {transform: translate(var(--t5), var(--t6));}
+.square-43 {transform: translate(var(--t4), var(--t6));}
+.square-33 {transform: translate(var(--t3), var(--t6));}
+.square-23 {transform: translate(var(--t2), var(--t6));}
+.square-13 {transform: translate(var(--t1), var(--t6));}
+
+.square-82 {transform: translate(var(--t8), var(--t7));}
+.square-72 {transform: translate(var(--t7), var(--t7));}
+.square-62 {transform: translate(var(--t6), var(--t7));}
+.square-52 {transform: translate(var(--t5), var(--t7));}
+.square-42 {transform: translate(var(--t4), var(--t7));}
+.square-32 {transform: translate(var(--t3), var(--t7));}
+.square-22 {transform: translate(var(--t2), var(--t7));}
+.square-12 {transform: translate(var(--t1), var(--t7));}
+
+.square-81 {transform: translate(var(--t8), var(--t8));}
+.square-71 {transform: translate(var(--t7), var(--t8));}
+.square-61 {transform: translate(var(--t6), var(--t8));}
+.square-51 {transform: translate(var(--t5), var(--t8));}
+.square-41 {transform: translate(var(--t4), var(--t8));}
+.square-31 {transform: translate(var(--t3), var(--t8));}
+.square-21 {transform: translate(var(--t2), var(--t8));}
+.square-11 {transform: translate(var(--t1), var(--t8));}
+
+/*******************************************************/
+/*******************************************************/
