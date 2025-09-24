@@ -273,3 +273,90 @@ html, body {
 
 /*******************************************************/
 /*******************************************************/
+
+/* Promotion des pions */
+#promotion-popup {
+    display: none;
+    background: #fff;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px #333;
+
+    min-width: 100px;
+    min-height: 25px;
+    width: calc(var(--boardSize) / 3);
+    height: calc(var(--boardSize) / 12);
+
+    z-index: 1000;
+    text-align: center;
+    color: black;
+
+    position: absolute;
+    pointer-events: auto;
+}
+
+#promo-choices {
+    display: flex;
+    justify-content: space-between;
+}
+
+#promo-choices > img {
+    min-width: 25px;
+    min-height: 25px;
+    width: calc(var(--boardSize) / 12);
+    height: calc(var(--boardSize) / 12);
+}
+
+/*******************************************************/
+/*******************************************************/
+
+/* Modal de fin de partie */
+#endgame-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    pointer-events: auto;
+}
+.endgame-modal-box {
+    background: #fff;
+    padding: 20px 10px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #222;
+    text-align: center;
+    min-width: 200px;
+    position: relative;
+    transform: translate(0, 20%);
+}
+.endgame-modal-message {
+    font-size: max(20px, 2vw);
+    margin-bottom: 20px;
+    color: black;
+}
+.endgame-modal-btn {
+    margin: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    width: max(2vw, 150px);
+    height: 30px;
+    text-align: center;
+    color: white;
+    background-color:#16a34a;
+	border:1px solid #117736;
+}
+
+.endgame-modal-btn:hover {
+	background-color:#117736;
+}
+.endgame-modal-btn:active {
+    background-color:#16a34a;
+	position:relative;
+	top:1px;
+}
+
+/*******************************************************/
+/*******************************************************/

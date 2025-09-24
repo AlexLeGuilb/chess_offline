@@ -14,11 +14,26 @@
             <div id="check"></div>
         </div>
         <div id="chess">
+            <div id="promotion-popup">
+                <div id="promo-choices">
+                    <img src="" class="promo-img" alt="Reine" data-piece="q">
+                    <img src="" class="promo-img" alt="Tour" data-piece="r">
+                    <img src="" class="promo-img" alt="Fou" data-piece="b">
+                    <img src="" class="promo-img" alt="Cavalier" data-piece="n">
+                </div>
+            </div>
+
             <div id="board"></div>
         </div>
         <div id="gameBtn">
             <button type="button" id="newGame" onclick="newGame()">Nouvelle partie</button>
-            <button type="button" id="surrender" onclick="newGame()">Abandonner</button>
+            <button type="button" id="surrender" onclick="surrender()" style="visibility: hidden;">Abandonner</button>
+        </div>
+        <div id="endgame-modal" style="display:none;">
+            <div class="endgame-modal-box">
+                <div type="button" onclick="newGame()" class="endgame-modal-message"></div>
+                <button class="endgame-modal-btn">Nouvelle partie</button>
+            </div>
         </div>
     </div>
 
