@@ -16,10 +16,10 @@
         <div id="chess">
             <div id="promotion-popup">
                 <div id="promo-choices">
-                    <img src="" class="promo-img" alt="Reine" data-piece="q">
-                    <img src="" class="promo-img" alt="Tour" data-piece="r">
-                    <img src="" class="promo-img" alt="Fou" data-piece="b">
-                    <img src="" class="promo-img" alt="Cavalier" data-piece="n">
+                    <img src="" id="q" class="promo-img" onclick="promoteTo('q', this.getAttribute('data-piece'))" alt="Reine">
+                    <img src="" id="r" class="promo-img" onclick="promoteTo('r', this.getAttribute('data-piece'))" alt="Tour">
+                    <img src="" id="b" class="promo-img" onclick="promoteTo('b', this.getAttribute('data-piece'))" alt="Fou">
+                    <img src="" id="n" class="promo-img" onclick="promoteTo('n', this.getAttribute('data-piece'))" alt="Cavalier">
                 </div>
             </div>
 
