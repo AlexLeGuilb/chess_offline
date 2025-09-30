@@ -97,22 +97,13 @@ function promotePawn(sqNb) {
     // Crée le popup si non existant
     let popup = document.getElementById('promotion-popup');
     let images = document.getElementsByClassName('promo-img');
-    if (!popup) {return;}
+    if (!popup) return;
 
+    // Affichage
     popup.style.display = 'flex';
-
-    // Positionne le popup sous le pion
-    let rPawn = document.querySelector(`.square-${sqNb}.piece`).getBoundingClientRect();
-    let rBoard = board.getBoundingClientRect();
-    let rPop = popup.getBoundingClientRect();
-
-
-    popup.style.left = (rBoard.left + (sqNb[0]*(rBoard.width/8)) - (rPop.width/1.5)) + 'px';
-    if (sqNb[1] == '8') {
-        popup.style.top = (rPawn.top + rPawn.height) + 'px';
-    } else {
-        popup.style.top = (rBoard.height - rPawn.height) + 'px';
-    }
+    popup.setAttribute("data-piece", sqNb);
+    // Positionnement
+    positionPromotionPopup()
 
     Array.from(images).forEach(img => {
         let pieceType = img.getAttribute('id');
@@ -120,6 +111,23 @@ function promotePawn(sqNb) {
         img.setAttribute('data-piece', `${sqNb}${turn}${pieceType}`);
     });
 }
+
+// Calcule la position du popup de promotion
+function positionPromotionPopup() {
+    let popup = document.getElementById('promotion-popup');
+    if (popup.style.display != 'flex') return;
+
+    let piece = document.querySelector(`.piece.promoting`);
+    let pRect = piece.getBoundingClientRect();
+
+    popup.style.left = (pRect.left + pRect.width/2)+'px';
+    if (piece.getAttribute('data-square')[1] == '8') {
+        popup.style.top = (pRect.top + 0.75*pRect.width) + 'px';
+    } else {
+        popup.style.top = (pRect.top - 0.65*pRect.width) + 'px';
+    }
+}
+
 // Execute la promotion du pion
 function promoteTo(strPromo) {
     let sqPromo = strPromo[0]+strPromo[1];
@@ -141,6 +149,10 @@ function promoteTo(strPromo) {
 
     nextTurn();
 }
+
+// Repositionne le popup
+window.addEventListener('resize', positionPromotionPopup);
+
 /***************************************************************************
  ***************************************************************************/
 
@@ -165,8 +177,13 @@ function pieceMouseDown(e) {
             pieceDOM.style.zIndex = 10;
             //Mettre le centre de la pièce sur le curseur
             pieceDOM.style.position = "absolute"; //Ne pas mettre "relative"
-            pieceDOM.style.top = (e.clientY - (pieceDOM.getBoundingClientRect().width / 2)) + 'px'
-            pieceDOM.style.left = (e.clientX - (pieceDOM.getBoundingClientRect().width / 2)) + 'px'
+            // Centrer la pièce sur le curseur
+            let boardRect = board.getBoundingClientRect();
+            let pieceSize = pieceDOM.getBoundingClientRect().width;
+
+            pieceDOM.style.left = (e.clientX - boardRect.left - pieceSize / 2) + 'px';
+            pieceDOM.style.top = (e.clientY - boardRect.top - pieceSize / 2) + 'px';
+
             //Changer le curseur
             pieceDOM.style.cursor = "grabbing";
 
@@ -191,8 +208,11 @@ function onMouseMove(e) {
     
     if (e.button != 0) return; // Redondant but just to be sure
     // Centrer la pièce sur le curseur
-    pieceDOM.style.top = (e.clientY - (pieceDOM.getBoundingClientRect().width / 2)) + 'px';
-    pieceDOM.style.left = (e.clientX - (pieceDOM.getBoundingClientRect().width / 2)) + 'px';
+    let boardRect = board.getBoundingClientRect();
+    let pieceSize = pieceDOM.getBoundingClientRect().width;
+
+    pieceDOM.style.left = (e.clientX - boardRect.left - pieceSize / 2) + 'px';
+    pieceDOM.style.top = (e.clientY - boardRect.top - pieceSize / 2) + 'px';
 }
 
 // Quand le clic est relacher (en fonction de l'endroit sur le plateaux, actions différentes)
@@ -206,7 +226,6 @@ function onMouseUp(e) {
     const rect = board.getBoundingClientRect();
     const boardSize = rect.width;
 
-    // Position du curseur par rapport au plateau
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
