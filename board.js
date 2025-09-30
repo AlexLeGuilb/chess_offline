@@ -93,7 +93,7 @@ function addPieceListeners() {
 }
 
 //Affiche le popup de promotion du pion
-function promotePawn(newClass) {
+function promotePawn(sqNb) {
     // Crée le popup si non existant
     let popup = document.getElementById('promotion-popup');
     let images = document.getElementsByClassName('promo-img');
@@ -102,13 +102,13 @@ function promotePawn(newClass) {
     popup.style.display = 'flex';
 
     // Positionne le popup sous le pion
-    let rPawn = dgP.getBoundingClientRect();
+    let rPawn = document.querySelector(`.square-${sqNb}.piece`).getBoundingClientRect();
     let rBoard = board.getBoundingClientRect();
     let rPop = popup.getBoundingClientRect();
 
 
-    popup.style.left = (rBoard.left + (newClass[0]*(rBoard.width/8)) - (rPop.width/1.5)) + 'px';
-    if (newClass[1] == '8') {
+    popup.style.left = (rBoard.left + (sqNb[0]*(rBoard.width/8)) - (rPop.width/1.5)) + 'px';
+    if (sqNb[1] == '8') {
         popup.style.top = (rPawn.top + rPawn.height) + 'px';
     } else {
         popup.style.top = (rBoard.height - rPawn.height) + 'px';
@@ -117,15 +117,21 @@ function promotePawn(newClass) {
     Array.from(images).forEach(img => {
         let pieceType = img.getAttribute('id');
         img.src = `./img/${turn}${pieceType}.png`;
-        img.setAttribute('data-piece', newClass);
+        img.setAttribute('data-piece', `${sqNb}${turn}${pieceType}`);
     });
 }
 // Execute la promotion du pion
-function promoteTo(type, newClass) {
-    let p = document.querySelector(`.square-${newClass}.piece.promoting`);
+function promoteTo(strPromo) {
+    let sqPromo = strPromo[0]+strPromo[1];
+    let cPromo = strPromo[2];
+    let tPromo = strPromo[3];
+    let p = document.querySelector(`.square-${sqPromo}.piece.promoting`);
     if (!p) {return;}
-    
-    p.classList.replace(p.dataset.color+'p', p.dataset.color+type)
+
+    let pInfo = {color: cPromo, type: tPromo, hasMoved: true}
+    setPiece(sqPromo, pInfo)
+
+    p.classList.remove('promoting');
 
     // Reset du popup
     let popup = document.getElementById('promotion-popup');
@@ -258,7 +264,9 @@ function setPiece(square, piece) {
     }
 }
 
-// Déplace une pièce (ou deux en cas de roque)
+/**
+ * Déplace une pièce (ou deux en cas de roque)
+ */
 function movePiece(from, to) {
     let pFrom = getPiece(from);
     if (!pFrom) return false; // Pas de pièce à bouger
@@ -290,7 +298,9 @@ function movePiece(from, to) {
     // Check s'il y a une promotion à faire
     if (pFrom.type == 'p') {
         if ((pFrom.color == 'b' && to[1] == 1) || (pFrom.color == 'w' && to[1] == 8)) {
-            document.getElementsByClassName(`square-${to}`).classList.add('promoting');
+            renderBoard();
+            let p = document.querySelector(`.square-${to}.piece`);
+            if (p != null) p.classList.add('promoting');
             promotePawn(to);
             return;
         } else {
@@ -359,7 +369,9 @@ function getPseudoLegalMoves(square, color, type) {
     }
 }
 
-// Affiche ou efface le surlignage d'échec (couleur du roi en échec en paramètre)
+/*
+ * Affiche ou efface le surlignage d'échec (couleur du roi en échec en paramètre)
+ */
 function setCheckHighlight(onOff, color) {
     document.querySelectorAll('[class*="is-checked"]').forEach(item => item.remove());
     if (onOff) {
