@@ -60,6 +60,8 @@ html, body {
     height: var(--boardSize);
     min-width: var(--boardMinWidth);
     min-height: var(--boardMinWidth);
+
+    position: relative;
 }
 
 #gameBtn {
@@ -291,6 +293,8 @@ html, body {
     color: black;
 
     position: absolute;
+    flex-direction: row;
+    transform: translateX(-50%);
     pointer-events: auto;
 }
 
