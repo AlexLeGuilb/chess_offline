@@ -162,43 +162,48 @@ window.addEventListener('resize', positionPromotionPopup);
  *****************************************/
 // Quand le clic est enfoncé
 function pieceMouseDown(e) {
-    if (e.target.classList.contains('piece') && e.button == 0) { //button == 0 => click gauche
-        if (document.getElementById('promotion-popup').style.display == 'none') {
-            // Sauvegarde de la pièce sélectionnée
-            let pieceDOM = e.target;
-            draggingPiece = pieceDOM;
-            let pSquare = pieceDOM.dataset.square;
-            let piece = getPiece(pSquare);
-            if (piece.color != pieceDOM.dataset.color) {
-                console.log('différence de donnée');
-                return;
-            }
-            // Amener la pièce devant (pour eviter quelle passe sous une autre)
-            pieceDOM.style.zIndex = 10;
-            //Mettre le centre de la pièce sur le curseur
-            pieceDOM.style.position = "absolute"; //Ne pas mettre "relative"
-            // Centrer la pièce sur le curseur
-            let boardRect = board.getBoundingClientRect();
-            let pieceSize = pieceDOM.getBoundingClientRect().width;
+    // Si clic gauche sur une pièce et qu'il n'y a pas de promotion en cours
+    if (!e.target.classList.contains('piece') || e.button != 0) return;
+    if (document.getElementById('promotion-popup').style.display != 'none') return;
 
-            pieceDOM.style.left = (e.clientX - boardRect.left - pieceSize / 2) + 'px';
-            pieceDOM.style.top = (e.clientY - boardRect.top - pieceSize / 2) + 'px';
+    let pieceDOM = e.target;
+    if (pieceDOM.dataset.color != turn) {
+        setHighlight(false);
+        setHintMoves(false);
+        return;
+    };
 
-            //Changer le curseur
-            pieceDOM.style.cursor = "grabbing";
-
-            // Sélectionner la pièce (visuellement)
-            piece.color == turn ? setHighlight(true, pSquare) : setHighlight(false);
-
-            // Vérifier si la pièce peut bouger
-            if (piece.color == turn) {
-                canThisPieceMove(pSquare, true);
-            }
-            
-            //Supprimer la classe "square-xx" pour cancel la propriété "transform"
-            pieceDOM.classList.remove('square-'+pSquare);
-        }
+    // Sauvegarde de la pièce sélectionnée
+    draggingPiece = pieceDOM;
+    let pSquare = pieceDOM.dataset.square;
+    let piece = getPiece(pSquare);
+    if (piece.color != pieceDOM.dataset.color) {
+        console.log('différence de donnée');
+        return;
     }
+
+    // Amener la pièce devant (pour eviter quelle passe sous une autre)
+    pieceDOM.style.zIndex = 10;
+    //Mettre le centre de la pièce sur le curseur
+    pieceDOM.style.position = "absolute"; //Ne pas mettre "relative"
+    // Centrer la pièce sur le curseur
+    let boardRect = board.getBoundingClientRect();
+    let pieceSize = pieceDOM.getBoundingClientRect().width;
+
+    pieceDOM.style.left = (e.clientX - boardRect.left - pieceSize / 2) + 'px';
+    pieceDOM.style.top = (e.clientY - boardRect.top - pieceSize / 2) + 'px';
+
+    //Changer le curseur
+    pieceDOM.style.cursor = "grabbing";
+
+    // Sélectionner la pièce (visuellement)
+    piece.color == turn ? setHighlight(true, pSquare) : setHighlight(false);
+
+    // Vérifier si la pièce peut bouger
+    if (piece.color == turn) canThisPieceMove(pSquare, true);
+    
+    //Supprimer la classe "square-xx" pour cancel la propriété "transform"
+    pieceDOM.classList.remove(`square-${pSquare}`);
 };
 
 // Quand le curseur bouge
@@ -232,7 +237,7 @@ function onMouseUp(e) {
     // If en-dehors du plateau then highlight else lache la pièce
     if ((x < 0) || (x > boardSize) || (y < 0) || (y > boardSize)) {
         //reset la classe "square-xx"
-        pieceDOM.classList.add('square-'+pieceDOM.dataset.square);
+        pieceDOM.classList.add(`square-${pieceDOM.dataset.square}`);
     } else {
         // Calculer col and row
         let col = Math.floor((x / boardSize) * 8) + 1; // 1 to 8
@@ -283,31 +288,29 @@ function setPiece(square, piece) {
     }
 }
 
-/**
- * Déplace une pièce (ou deux en cas de roque)
- */
+// Déplace une pièce (ou deux en cas de roque)
 function movePiece(from, to) {
     let pFrom = getPiece(from);
     if (!pFrom) return false; // Pas de pièce à bouger
 
-    // Si c’est un roque
-    // col-2 = +/-2 en fonction de la direction
-    if (pFrom.type === 'k' && Math.abs(parseInt(to[0]) - parseInt(from[0])) === 2) {
-        let row = from[1];
-        if (to[0] == 7) { 
-            // Petit roque
+    // Si c'est un roi qui se déplace de 2 cases
+    let diff = Math.abs(parseInt(to[0]) - parseInt(from[0]));
+    if (pFrom.type === 'k' && diff === 2) {
+        let row = from[1], col = to[0];
+        // 3 = Grand roque, 7 = Petit Roque
+        if (col == 7) {
             let rook = getPiece(`8${row}`);
             rook.hasMoved = true;
             setPiece(`6${row}`, rook);
             setPiece(`8${row}`, null);
-        } else if (to[0] == 3) { 
-            // Grand roque
+        } else if (col == 3) {
             let rook = getPiece(`1${row}`);
             rook.hasMoved
             setPiece(`4${row}`, rook);
             setPiece(`1${row}`, null);
         }
     }
+
     pFrom.hasMoved = true;
     // Déplacement
     setPiece(to, pFrom);
@@ -342,9 +345,9 @@ function movePiece(from, to) {
  */
 function isInCheck(color) {
     // Retrouver la case du roi
-    let kingSquare = null;
+    let kingSquare = null, piece;
     for (let square in boardState) {
-        let piece = boardState[square];
+        piece = getPiece(square);
         if (piece && piece.type === 'k' && piece.color === color) {
             kingSquare = square;
             break;
@@ -354,10 +357,11 @@ function isInCheck(color) {
 
     // Parcourir toutes les pièces adverses
     let enemyColor = color === 'w' ? 'b' : 'w';
+    let moves = [];
     for (let square in boardState) {
-        let piece = boardState[square];
+        piece = getPiece(square);
         if (piece && piece.color === enemyColor) {
-            let moves = getPseudoLegalMoves(square, piece.color, piece.type);
+            moves = getPseudoLegalMoves(square, piece.color, piece.type);
 
             // Vérifier si un coup atteint la case du roi
             if (moves.includes(kingSquare)) {
@@ -384,6 +388,7 @@ function getPseudoLegalMoves(square, color, type) {
             ...getRookMoves(col, row, color),
             ...getBishopMoves(col, row, color)
         ];
+        case 'k': return getKingMoves(col, row, color);
         default: return [];
     }
 }
@@ -412,7 +417,7 @@ function setHighlight(onOff, sqNb) {
 
     if (onOff && sqNb != null) {
         let divH = document.createElement('div');
-        divH.classList.add('cell', 'square-'+sqNb);
+        divH.classList.add('cell', `square-${sqNb}`);
 
         // Détermine la couleur de la case pour le style de surbrillance
         let col = parseInt(sqNb[0]);
@@ -648,20 +653,12 @@ function getKingMoves(col, row, color) {
             }
         }
     }
-    // TODO: gérer le roque
 
-    // Roque
-    let kingSquare = `${col}${row}`;
-    let king = getPiece(kingSquare);
-    if (!king.hasMoved && !isInCheck(color)) {
-        // Petit roque (côté roi)
-        if (canCastle(color, 'king')) {
-            moves.push(`${col+2}${row}`);
-        }
-        // Grand roque (côté dame)
-        if (canCastle(color, 'queen')) {
-            moves.push(`${col-2}${row}`);
-        }
+    // Gestion du roque
+    let king = getPiece(`${col}${row}`);
+    if (!king.hasMoved && king.color == color) {
+        if (canCastle(color, 'king')) color == 'w' ? candidateMoves.push('71') : candidateMoves.push('78');
+        if (canCastle(color, 'queen')) color == 'w' ? candidateMoves.push('31') : candidateMoves.push('38');
     }
     return moves;
 }
