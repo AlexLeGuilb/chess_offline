@@ -657,8 +657,8 @@ function getKingMoves(col, row, color) {
     // Gestion du roque
     let king = getPiece(`${col}${row}`);
     if (!king.hasMoved && king.color == color) {
-        if (canCastle(color, 'king')) color == 'w' ? candidateMoves.push('71') : candidateMoves.push('78');
-        if (canCastle(color, 'queen')) color == 'w' ? candidateMoves.push('31') : candidateMoves.push('38');
+        if (canCastle(color, 'king')) color == 'w' ? moves.push('71') : moves.push('78');
+        if (canCastle(color, 'queen')) color == 'w' ? moves.push('31') : moves.push('38');
     }
     return moves;
 }
