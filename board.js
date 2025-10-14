@@ -669,6 +669,10 @@ function getKingMoves(col, row, color) {
  */
 function canCastle(color, side) {
     let row = (color === 'w') ? 1 : 8; // ligne du roi
+
+    let ksq = document.querySelectorAll('[class*="is-checked"]');
+    if (ksq.length > 0 && ksq[0].classList.contains(`square-5${row}`)) return false;
+
     let rookCol = (side === 'king') ? 8 : 1;
     let rook = getPiece(`${rookCol}${row}`);
 
